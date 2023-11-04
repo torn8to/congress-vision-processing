@@ -41,7 +41,7 @@ def alignImages(im1, template_image):
 	return im1Reg, h
 
 
-def isProperDocument(im1: np.ndarray, template_image: np.ndarray, good_match_limit:int = 23) -> pd.DateFrame():
+def isProperDocument(im1: np.ndarray, template_image: np.ndarray, good_match_limit:int = 23) -> bool:
 	"""
 	checks that the form is im1 is simple to template_image
 	:param im1:

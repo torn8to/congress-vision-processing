@@ -1,4 +1,4 @@
-from Khanna import parse_page
+from Khanna import parsePage
 
 
 
@@ -183,7 +183,7 @@ big_df = pd.read_csv("data and objects/data_file")
 for x in tqdm(range(82, len(list_of_pages)), desc="total_progress"):
 	try:
 		print(list_of_pages[x])
-		page_df = parse_page(list_of_pages[x])
+		page_df = parsePage(list_of_pages[x])
 		big_df = pd.concat([big_df, page_df], axis=0, ignore_index=True)
 		big_df.to_csv("data_file")
 	except:

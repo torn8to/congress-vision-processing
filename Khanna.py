@@ -52,7 +52,7 @@ def get_ticker_and_short_name(company_name):
 	return company_code, short_name
 
 
-def parse_page(img_in, report_date=""):
+def parsePage(img_in, report_date=""):
 	img_read = img_in
 	img = cv2.cvtColor(img_read, cv2.COLOR_BGR2GRAY)
 	# img = cv2.fastNlMeansDenoising(img,None,10,10,7,21)
@@ -70,7 +70,6 @@ def parse_page(img_in, report_date=""):
 	
 	pruned_horizontal_averages = [b for b in horizontal_averages if b > 600]
 	H, W, D = read_rotaated.shape
-	resized_img = cv2.resize(read_rotaated, (W // 4, H // 4))
 	data_big = {}
 	used_column_names = []
 	counter = 0
@@ -124,7 +123,10 @@ def parseFromHouseDataFrameRow(row):
 	request_url:str = base_url + f"/{row.Year}/{row.DocID}.pdf"
 	req = requests.get(request_url)
 	imgs = convert_from_bytes(req.content, dpi=400, fmt="png", poppler_path="poppler/poppler-23.08.0/Library/bin")
+	tables = pd.DataFrame()
+	for x in range(len(imgs)):
+		tables = pd.concat([parsePage(imgs[x] + row["FilingDate"]), tables])
 	
-	
+	return tables
 	
 	
