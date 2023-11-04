@@ -204,8 +204,7 @@ def parseFromSenatePull():
 
 if __name__ == "__main__":
 	#df = pd.read_csv("output.csv",usecols=money_definition)
-	template_image = cv2.imread("image1.png",0)
+	template_image = cv2.imread("image1.png", 0)
 	out:pd.DataFrame = postProcessing(parse_document(template_image))
-	print(out)
 	out.to_csv("output.csv")
 

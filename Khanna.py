@@ -1,24 +1,16 @@
 import cv2
 import numpy as np
 import pandas as pd
-from pdf2image import convert_from_path
 import pytesseract
-import matplotlib.pyplot as plt
 import requests
-from sklearn.tree import DecisionTreeClassifier
 from imageProcessing import getHorizontalImageContours, getVerticalImageContours, binLines
 import pickle
 from tqdm import tqdm
-
-'''
-convert_from_path(pdf_path="8219992.pdf",poppler_path="./poppler/poppler-23.08.0/Library/bin",output_folder="./iamges",
-									fmt="png",dpi= 400)
-'''
-
-neigh = pickle.load(open("data and objects/neigbors_model.pkl", "rb"))
+from pdf2image import convert_from_bytes
 
 
 
+neighbors_image_detector = pickle.load(open("data and objects/neigbors_model.pkl", "rb"))
 money_definition = ["sp/dc/jt",
 										"full stock name",
 										"purchase",
@@ -99,7 +91,7 @@ def parse_page(img_in, report_date=""):
 			if len(data) == 0:
 				resized = cv2.resize(ocr_processed, (28, 28))
 				model_input = np.array([resized.flatten()])
-				prediction = neigh.predict(model_input)
+				prediction = neighbors_image_detector.predict(model_input)
 				data = prediction
 			# plt.imshow(ocr_processed)
 			# plt.show()
@@ -125,3 +117,14 @@ def parse_page(img_in, report_date=""):
 		df["ReportDate"] = report_date
 	return df
 
+
+def parseFromHouseDataFrameRow(row):
+	#row is a dataframee row that has been iterated through
+	base_url:str = "https://disclosures-clerk.house.gov/public_disc/ptr-pdfs"
+	request_url:str = base_url + f"/{row.Year}/{row.DocID}.pdf"
+	req = requests.get(request_url)
+	imgs = convert_from_bytes(req.content, dpi=400, fmt="png", poppler_path="poppler/poppler-23.08.0/Library/bin")
+	
+	
+	
+	
